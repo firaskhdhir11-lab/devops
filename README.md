@@ -257,3 +257,68 @@ EOF
 
 cat README.md
 # devops
+
+
+## IV. Première introduction à l'automatisation avec Vagrant
+
+### 15. Installation et configuration
+
+Vagrant version `2.4.9` a été installé sur la VM Ubuntu Server. VirtualBox a été utilisé comme provider.
+
+Le fichier `Vagrantfile` permet de créer automatiquement une machine virtuelle Ubuntu :
+
+```ruby
+Vagrant.configure("2") do |config|
+  config.vm.box = "bento/ubuntu-24.04"
+  config.vm.hostname = "ubuntu-vagrant"
+  config.vm.network "private_network", ip: "192.168.56.10"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.name = "Ubuntu-Vagrant"
+    vb.memory = 1024
+    vb.cpus = 1
+  end
+end
+```
+
+Validation et démarrage :
+
+```bash
+vagrant validate
+vagrant up
+```
+
+### 16. Connexion SSH à la VM
+
+La commande suivante permet de se connecter à la machine virtuelle créée par Vagrant :
+
+```bash
+vagrant ssh
+```
+
+Vérification de la configuration :
+
+```bash
+hostname
+free -h
+nproc
+ip -4 addr
+```
+
+Résultats obtenus :
+- Système : Ubuntu Server 24.04.3 LTS
+- Hostname : `ubuntu-vagrant`
+- Adresse IP privée : `192.168.56.10`
+- Mémoire : environ 1 Go
+- CPU : 1
+
+### 17. Vérification de l'état de la VM
+
+```bash
+vagrant status
+```
+
+### Comparaison : création manuelle et Vagrant
+
+La création manuelle nécessite une configuration à travers l'interface de l'hyperviseur. Vagrant automatise la création à partir d'un fichier `Vagrantfile` reproductible et facilite le démarrage, la connexion et la gestion de la machine virtuelle.
+
