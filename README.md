@@ -322,3 +322,46 @@ vagrant status
 
 La création manuelle nécessite une configuration à travers l'interface de l'hyperviseur. Vagrant automatise la création à partir d'un fichier `Vagrantfile` reproductible et facilite le démarrage, la connexion et la gestion de la machine virtuelle.
 
+
+## VI. Jenkins CI Pipeline
+
+### 22. Checkout du repository GitHub
+
+Le pipeline Jenkins récupère automatiquement le code source depuis GitHub.
+
+Repository : https://github.com/firaskhdhir11-lab/devops
+
+Le fichier `Jenkinsfile` définit les étapes du pipeline.
+
+### 23. Installation des dépendances
+
+La commande suivante installe les dépendances du projet :
+
+```bash
+npm ci
+```
+
+Cette étape a été exécutée avec succès dans Jenkins.
+
+### 24. Build de l'application Next.js
+
+La commande suivante génère le build de production :
+
+```bash
+npm run build
+```
+
+Résultat : `Finished: SUCCESS`.
+
+Les trois étapes du pipeline ont été exécutées avec succès :
+Checkout GitHub, Install Dependencies et Build Next.js.
+
+
+## Captures d'écran
+
+### Jenkins CI Pipeline — Build réussi
+
+Le pipeline Jenkins récupère le code depuis GitHub, installe les dépendances et construit l'application Next.js avec succès.
+
+![Jenkins Pipeline - Finished SUCCESS](screenshots/jenkins-success.png)
+
