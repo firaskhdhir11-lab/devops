@@ -365,3 +365,65 @@ Le pipeline Jenkins récupère le code depuis GitHub, installe les dépendances 
 
 ![Jenkins Pipeline - Finished SUCCESS](screenshots/jenkins-success.png)
 
+
+## VII. Automatisation avec Ansible
+
+### 25. Installation d'Ansible
+
+Ansible a été installé sur la machine d'administration. La commande suivante permet de vérifier sa version :
+
+```bash
+ansible --version
+```
+
+### 26. Configuration de l'inventaire
+
+Le fichier `inventory` définit le serveur Ubuntu distant à administrer :
+
+```ini
+[servers]
+ubuntu-server ansible_host=192.168.10.128 ansible_user=firas
+```
+
+Cette configuration permet à Ansible d'identifier le serveur cible et l'utilisateur SSH.
+
+### 27. Vérification de la connexion distante
+
+La connectivité avec le serveur a été vérifiée à l'aide du module `ping` :
+
+```bash
+ansible servers -i inventory -m ping --ask-pass
+```
+
+Le résultat `SUCCESS` avec `ping: pong` confirme que la communication entre Ansible et le serveur distant fonctionne.
+
+### 28. Exécution des playbooks
+
+#### Installation de curl
+
+Le playbook `install-curl.yml` utilise le module `ansible.builtin.apt` pour assurer la présence du paquet `curl`.
+
+```bash
+ansible-playbook -i inventory install-curl.yml --ask-pass
+```
+
+L'exécution s'est terminée sans erreur (`failed=0`).
+
+#### Vérification et démarrage de Docker
+
+Le playbook `install-docker.yml` vérifie la version de Docker, démarre le service et active son démarrage automatique.
+
+```bash
+ansible-playbook -i inventory install-docker.yml --ask-pass
+```
+
+L'exécution s'est terminée sans erreur (`failed=0`).
+
+**Remarque :** Docker était déjà installé sur le serveur. Le playbook vérifie son fonctionnement et démarre le service ; il ne réalise pas l'installation initiale.
+
+### Captures d'écran
+
+Les captures d'écran de cette activité sont disponibles dans le dossier [`activit 3 partie VII`](activit%203%20partie%20VII/).
+
+Elles illustrent les vérifications et les opérations réalisées avec Ansible.
+

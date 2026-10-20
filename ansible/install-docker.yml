@@ -1,0 +1,19 @@
+---
+- name: Verifier et demarrer Docker
+  hosts: servers
+  become: true
+
+  tasks:
+    - name: Verifier la version de Docker
+      ansible.builtin.command: docker --version
+      changed_when: false
+
+    - name: Demarrer le service Docker
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Verifier Docker Compose
+      ansible.builtin.command: docker compose version
+      changed_when: false

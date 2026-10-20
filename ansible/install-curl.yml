@@ -1,0 +1,11 @@
+---
+- name: Installer curl sur Ubuntu
+  hosts: servers
+  become: true
+
+  tasks:
+    - name: Installer le paquet curl
+      ansible.builtin.apt:
+        name: curl
+        state: present
+        update_cache: true
