@@ -427,3 +427,42 @@ Les captures d'écran de cette activité sont disponibles dans le dossier [`acti
 
 Elles illustrent les vérifications et les opérations réalisées avec Ansible.
 
+
+## VIII. Création de l'API Node.js / Express
+
+### 29. Présentation
+Une API REST a été développée avec Node.js et Express dans le dossier `api/`.
+
+### 30. Endpoints disponibles
+- `GET /api/health` : vérification de l'état de l'API.
+- `GET /api/profile` : récupération du profil.
+- `GET /api/projects` : récupération des projets.
+- `GET /api/skills` : récupération des compétences.
+
+### 31. Vérification de l'API
+```bash
+curl http://127.0.0.1:4005/api/health
+curl http://127.0.0.1:4005/api/projects
+curl http://127.0.0.1:4005/api/skills
+```
+
+### Captures d'écran
+Les captures des tests de l'API et de son intégration au frontend sont disponibles dans le dossier `screenshots/api/`.
+
+## IX. Conteneurisation avec Docker Compose
+
+### 32. Construction et démarrage des services
+```bash
+docker compose up -d --build
+```
+
+### 33. Vérification des conteneurs
+```bash
+docker compose ps
+docker compose logs
+```
+
+### 34. Accès à l'application
+- Frontend : `http://192.168.10.128:3005`
+- API : `http://192.168.10.128:4005`
+- Vérification de l'API : `http://192.168.10.128:4005/api/health`

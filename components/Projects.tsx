@@ -1,7 +1,36 @@
 
-import { projects } from "@/data/projects";
+"use client";
+
+import { useEffect, useState } from "react";
+import { projects as fallbackProjects } from "@/data/projects";
+
+type Project = {
+  title: string;
+  description: string;
+  tags: string[];
+  slug: string;
+};
 
 export default function Projects() {
+  const [projects, setProjects] = useState<Project[]>(fallbackProjects);
+
+  useEffect(() => {
+    const apiUrl =
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3003";
+
+    fetch(`${apiUrl}/api/projects`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("API request failed");
+        }
+        return response.json();
+      })
+      .then((data: Project[]) => setProjects(data))
+      .catch((error) => {
+        console.error("Unable to load projects from API:", error);
+      });
+  }, []);
+
   return (
     <section className="section" id="projects">
       <p className="eyebrow">MY WORK</p>

@@ -1,7 +1,24 @@
 services:
-  portfolio:
-    build: .
-    container_name: cv-container
+  api:
+    image: devsecops-api
+    build:
+      context: ./api
+    environment:
+      PORT: "3003"
     ports:
-      - "8081:80"
+      - "4005:3003"
+    restart: unless-stopped
+
+  frontend:
+    image: devsecops-portfolio
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_API_URL: http://192.168.10.128:4005
+    environment:
+      API_URL: http://api:3003
+    ports:
+      - "3005:3000"
+    depends_on:
+      - api
     restart: unless-stopped
