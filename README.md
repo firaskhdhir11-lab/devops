@@ -466,3 +466,15 @@ docker compose logs
 - Frontend : `http://192.168.10.128:3005`
 - API : `http://192.168.10.128:4005`
 - Vérification de l'API : `http://192.168.10.128:4005/api/health`
+## 11. Automatisation avec Vagrant et Ansible
+
+### 43. Déploiement automatique avec Ansible
+
+Un playbook Ansible a été créé pour automatiser le déploiement du DevSecOps Portfolio avec Docker Compose.
+
+Fichier utilisé : `ansible/deploy-portfolio.yml`
+
+Commande d'exécution :
+
+```bash
+ansible-playbook ansible/deploy-portfolio.yml

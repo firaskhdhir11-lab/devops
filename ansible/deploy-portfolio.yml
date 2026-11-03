@@ -1,0 +1,56 @@
+---
+- name: Deployer DevSecOps Portfolio
+  hosts: all
+  become: true
+
+  tasks:
+
+    - name: Mettre a jour les paquets
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Installer Docker et Docker Compose
+      ansible.builtin.apt:
+        name:
+          - docker.io
+          - docker-compose-v2
+        state: present
+
+    - name: Demarrer Docker
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Verifier Docker
+      ansible.builtin.command: docker --version
+      changed_when: false
+
+    - name: Verifier Docker Compose
+      ansible.builtin.command: docker compose version
+      changed_when: false
+
+    - name: Deployer le Portfolio avec Docker Compose
+      ansible.builtin.command:
+        cmd: docker compose up -d --build
+      args:
+        chdir: /opt/devsecops-portfolio
+      environment:
+        NEXT_PUBLIC_API_URL: "http://192.168.56.10:4005"
+
+    - name: Attendre le demarrage du frontend
+      ansible.builtin.wait_for:
+        host: 127.0.0.1
+        port: 3005
+        delay: 5
+        timeout: 300
+
+    - name: Verifier le frontend
+      ansible.builtin.uri:
+        url: http://127.0.0.1:3005
+        status_code: 200
+
+    - name: Afficher le resultat
+      ansible.builtin.debug:
+        msg: "DevSecOps Portfolio deploye avec succes !"

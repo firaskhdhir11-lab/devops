@@ -6,3 +6,10 @@ build/
 !.env.example
 npm-debug.log*
 .DS_Store
+
+# Vagrant
+.vagrant/
+**/.vagrant/
+
+# Backup files
+*.backup

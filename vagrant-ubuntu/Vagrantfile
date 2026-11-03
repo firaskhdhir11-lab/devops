@@ -1,13 +1,32 @@
 Vagrant.configure("2") do |config|
+
   config.vm.box = "bento/ubuntu-24.04"
 
   config.vm.hostname = "ubuntu-vagrant"
 
   config.vm.network "private_network", ip: "192.168.56.10"
+  config.vm.network "forwarded_port", guest: 3005, host: 13005, host_ip: "0.0.0.0", auto_correct: true
+  config.vm.network "forwarded_port", guest: 4005, host: 14005, host_ip: "0.0.0.0", auto_correct: true
+
+  # Partager le projet avec la VM
+  config.vm.synced_folder "../", "/opt/devsecops-portfolio"
 
   config.vm.provider "virtualbox" do |vb|
-    vb.name = "Ubuntu-Vagrant"
-    vb.memory = 1024
+    vb.name = "DevSecOps-Vagrant"
+    vb.memory = 1280
     vb.cpus = 1
+    
   end
+
+  # Provisionnement automatique avec Ansible
+  config.vm.provision "ansible_local" do |ansible|
+
+    ansible.install = true
+
+    ansible.provisioning_path = "/opt/devsecops-portfolio"
+
+    ansible.playbook = "ansible/deploy-portfolio.yml"
+
+  end
+
 end
