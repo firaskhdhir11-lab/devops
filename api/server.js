@@ -97,6 +97,19 @@ app.use((req, res) => {
     path: req.path
   });
 });
+// Centralized error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+
+  const statusCode = err.status || err.statusCode || 500;
+
+  res.status(statusCode).json({
+    success: false,
+    error: statusCode >= 500
+      ? "Internal server error"
+      : "Invalid request"
+  });
+});
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`DevSecOps Portfolio API running on port ${PORT}`);

@@ -535,3 +535,19 @@ Exemple de réponse :
     }
   ]
 }
+## Task 49 – Centralized Error Handling
+
+A centralized error-handling middleware was added to the Express API.
+
+Features:
+- Catches errors using Express error middleware.
+- Logs errors on the server.
+- Returns the appropriate HTTP status code.
+- Hides internal server details from API responses.
+- Returns a consistent JSON error response.
+
+Test:
+```bash
+curl -i -X POST http://localhost:4005/api/contact \
+-H "Content-Type: application/json" \
+-d '{bad json'
