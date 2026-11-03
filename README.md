@@ -551,3 +551,20 @@ Test:
 curl -i -X POST http://localhost:4005/api/contact \
 -H "Content-Type: application/json" \
 -d '{bad json'
+## Task 50 – HTTP Security Headers with Helmet
+
+Helmet was installed and configured in the Express API to secure HTTP response headers.
+
+Configuration:
+- `app.use(helmet())`
+
+Security headers verified:
+- Content-Security-Policy
+- X-Content-Type-Options: nosniff
+- X-Frame-Options: SAMEORIGIN
+- Strict-Transport-Security
+- Referrer-Policy: no-referrer
+
+Test:
+```bash
+curl -I http://localhost:4005/api/health

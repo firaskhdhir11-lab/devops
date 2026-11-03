@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
 const { z } = require("zod");
 
 const contactSchema = z.object({
@@ -10,6 +11,7 @@ const contactSchema = z.object({
 const app = express();
 const PORT = process.env.PORT || 3003;
 
+app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
