@@ -62,6 +62,30 @@ app.get("/api/skills", (req, res) => {
   ]);
 });
 
+app.post("/api/contact", (req, res) => {
+  const { name, email, message } = req.body;
+
+  if (
+    typeof name !== "string" || !name.trim() ||
+    typeof email !== "string" || !email.trim() ||
+    typeof message !== "string" || !message.trim()
+  ) {
+    return res.status(400).json({
+      error: "Name, email and message are required"
+    });
+  }
+
+  res.status(201).json({
+    success: true,
+    message: "Contact message received successfully",
+    data: {
+      name: name.trim(),
+      email: email.trim(),
+      message: message.trim()
+    }
+  });
+});
+
 app.use((req, res) => {
   res.status(404).json({
     error: "Route not found",
@@ -72,3 +96,4 @@ app.use((req, res) => {
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`DevSecOps Portfolio API running on port ${PORT}`);
 });
+

@@ -421,6 +421,7 @@ L'exécution s'est terminée sans erreur (`failed=0`).
 
 **Remarque :** Docker était déjà installé sur le serveur. Le playbook vérifie son fonctionnement et démarre le service ; il ne réalise pas l'installation initiale.
 
+
 ### Captures d'écran
 
 Les captures d'écran de cette activité sont disponibles dans le dossier [`activit 3 partie VII`](activit%203%20partie%20VII/).
@@ -445,6 +446,15 @@ curl http://127.0.0.1:4005/api/health
 curl http://127.0.0.1:4005/api/projects
 curl http://127.0.0.1:4005/api/skills
 ```
+
+### 32. Endpoint POST /api/contact
+
+Un endpoint POST permet de recevoir les messages du formulaire de contact. Les champs obligatoires sont name, email et message.
+
+- Test valide : HTTP 201 Created.
+- Test avec le champ message manquant : HTTP 400 Bad Request.
+
+L API vérifie la présence des trois champs avant d accepter le message.
 
 ### Captures d'écran
 Les captures des tests de l'API et de son intégration au frontend sont disponibles dans le dossier `screenshots/api/`.
