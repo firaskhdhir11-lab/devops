@@ -478,3 +478,14 @@ Commande d'exécution :
 
 ```bash
 ansible-playbook ansible/deploy-portfolio.yml
+
+### 45. Test de recréation automatique de la VM
+
+Afin de vérifier l'automatisation complète, la machine virtuelle a été supprimée puis recréée à partir de zéro.
+
+Commandes exécutées :
+
+```bash
+cd vagrant-ubuntu
+vagrant destroy -f
+vagrant up
