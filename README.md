@@ -508,3 +508,30 @@ Après une réponse HTTP 201, un message de confirmation s'affiche et le formula
 Capture d'écran du test réussi :
 
 ![Envoi réussi du formulaire de contact](screenshots/api/contact-success.png)
+### Validation stricte avec Zod
+
+La validation des données du formulaire de contact est assurée par la bibliothèque Zod.
+
+Le schéma impose :
+- Nom : entre 2 et 100 caractères.
+- Email : format email valide.
+- Message : entre 10 et 2000 caractères.
+- Refus des propriétés supplémentaires.
+
+**Test valide : HTTP 201 Created**
+
+**Test avec un email invalide : HTTP 400 Bad Request**
+
+Exemple de réponse :
+
+```json
+{
+  "success": false,
+  "error": "Validation failed",
+  "details": [
+    {
+      "field": "email",
+      "message": "Invalid email address"
+    }
+  ]
+}

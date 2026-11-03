@@ -1,6 +1,12 @@
 const express = require("express");
 const cors = require("cors");
+const { z } = require("zod");
 
+const contactSchema = z.object({
+  name: z.string().trim().min(2, "Name must contain at least 2 characters").max(100),
+  email: z.string().trim().email("Invalid email address").max(254),
+  message: z.string().trim().min(10, "Message must contain at least 10 characters").max(2000)
+}).strict();
 const app = express();
 const PORT = process.env.PORT || 3003;
 
@@ -63,26 +69,25 @@ app.get("/api/skills", (req, res) => {
 });
 
 app.post("/api/contact", (req, res) => {
-  const { name, email, message } = req.body;
+  const validation = contactSchema.safeParse(req.body);
 
-  if (
-    typeof name !== "string" || !name.trim() ||
-    typeof email !== "string" || !email.trim() ||
-    typeof message !== "string" || !message.trim()
-  ) {
+  if (!validation.success) {
     return res.status(400).json({
-      error: "Name, email and message are required"
+      success: false,
+      error: "Validation failed",
+      details: validation.error.issues.map((issue) => ({
+        field: issue.path.join("."),
+        message: issue.message
+      }))
     });
   }
+
+  const { name, email, message } = validation.data;
 
   res.status(201).json({
     success: true,
     message: "Contact message received successfully",
-    data: {
-      name: name.trim(),
-      email: email.trim(),
-      message: message.trim()
-    }
+    data: { name, email, message }
   });
 });
 
