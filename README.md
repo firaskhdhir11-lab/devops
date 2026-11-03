@@ -499,3 +499,12 @@ Commandes exécutées :
 cd vagrant-ubuntu
 vagrant destroy -f
 vagrant up
+### 33. Connexion du formulaire Next.js à l'API Express
+
+Le formulaire de contact développé avec Next.js envoie les données (name, email et message) vers l'API Express via une requête HTTP POST sur `/api/contact`.
+
+Après une réponse HTTP 201, un message de confirmation s'affiche et le formulaire est réinitialisé.
+
+Capture d'écran du test réussi :
+
+![Envoi réussi du formulaire de contact](screenshots/api/contact-success.png)
