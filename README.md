@@ -619,3 +619,30 @@ L API Express utilise PostgreSQL avec le package pg.
 Test : POST /api/contact avec curl.
 Vérification : SELECT * FROM contacts;
 Résultat : message enregistré avec succès dans PostgreSQL.
+
+## Task 55 — Prisma Database Migrations
+
+Prisma ORM is configured to manage PostgreSQL database migrations.
+
+- Prisma version: 6.19.3
+- Prisma Client: @prisma/client
+- Database: PostgreSQL
+- Model: Contact
+- Migration directory: api/prisma/migrations
+
+### Run database migrations
+
+```bash
+cd api
+npm install
+npx prisma generate
+npm run db:migrate
+```
+
+### Verify migration status
+
+```bash
+npx prisma migrate status
+```
+
+The initial migration (0_init) was baselined against the existing PostgreSQL database without deleting existing contact records.
