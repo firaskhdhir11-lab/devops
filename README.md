@@ -606,3 +606,16 @@ The API was reviewed against the OWASP API Security Top 10 (2023).
 
 Reference:
 https://owasp.org/API-Security/editions/2023/en/0x11-t10/
+
+### 54. Stockage des messages Contact avec PostgreSQL
+
+L API Express utilise PostgreSQL avec le package pg.
+
+- Création de la table contacts.
+- Validation des données avec Zod.
+- Enregistrement avec une requête SQL paramétrée INSERT.
+- Retour HTTP 201 après enregistrement.
+
+Test : POST /api/contact avec curl.
+Vérification : SELECT * FROM contacts;
+Résultat : message enregistré avec succès dans PostgreSQL.

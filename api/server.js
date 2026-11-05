@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const { z } = require("zod");
+const { Pool } = require("pg");
 const { rateLimit } = require("express-rate-limit");
 
 const contactSchema = z.object({
@@ -22,6 +23,9 @@ const contactLimiter = rateLimit({
 
 const app = express();
 const PORT = process.env.PORT || 3003;
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL
+});
 
 app.use(helmet());
 app.use(cors());
@@ -82,27 +86,38 @@ app.get("/api/skills", (req, res) => {
   ]);
 });
 
-app.post("/api/contact", contactLimiter, (req, res) => {
-  const validation = contactSchema.safeParse(req.body);
+app.post("/api/contact", contactLimiter, async (req, res, next) => {
+  try {
+    const validation = contactSchema.safeParse(req.body);
 
-  if (!validation.success) {
-    return res.status(400).json({
-      success: false,
-      error: "Validation failed",
-      details: validation.error.issues.map((issue) => ({
-        field: issue.path.join("."),
-        message: issue.message
-      }))
+    if (!validation.success) {
+      return res.status(400).json({
+        success: false,
+        error: "Validation failed",
+        details: validation.error.issues.map((issue) => ({
+          field: issue.path.join("."),
+          message: issue.message
+        }))
+      });
+    }
+
+    const { name, email, message } = validation.data;
+
+    const result = await pool.query(
+      `INSERT INTO contacts (name, email, message)
+       VALUES ($1, $2, $3)
+       RETURNING id, name, email, message, created_at`,
+      [name, email, message]
+    );
+
+    res.status(201).json({
+      success: true,
+      message: "Contact message saved successfully",
+      data: result.rows[0]
     });
+  } catch (err) {
+    next(err);
   }
-
-  const { name, email, message } = validation.data;
-
-  res.status(201).json({
-    success: true,
-    message: "Contact message received successfully",
-    data: { name, email, message }
-  });
 });
 
 app.use((req, res) => {

@@ -5,8 +5,11 @@ services:
       context: ./api
     environment:
       PORT: "3003"
+      DATABASE_URL: postgres://devsecops:devsecops_dev_password@postgres:5432/devsecops
     ports:
       - "4005:3003"
+    depends_on:
+      - postgres
     restart: unless-stopped
 
   frontend:
@@ -22,3 +25,17 @@ services:
     depends_on:
       - api
     restart: unless-stopped
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: devsecops
+      POSTGRES_USER: devsecops
+      POSTGRES_PASSWORD: devsecops_dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
