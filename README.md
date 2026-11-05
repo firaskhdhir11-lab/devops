@@ -661,3 +661,11 @@ Les identifiants PostgreSQL sont externalisés dans des fichiers d'environnement
 cp .env.example .env
 docker compose config
 docker compose up -d --build
+## 57. Automated Frontend Tests
+
+Frontend tests are implemented using Vitest and React Testing Library.
+
+Run the tests:
+
+```bash
+npm test
