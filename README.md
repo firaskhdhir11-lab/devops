@@ -587,3 +587,22 @@ Results:
 - Request 6: HTTP 429 Too Many Requests
 
 The test confirms that rate limiting is working correctly.
+## Task 52 – OWASP API Security Top 10
+
+The API was reviewed against the OWASP API Security Top 10 (2023).
+
+| Risk | Identified Risk | Existing or Planned Mitigation |
+|---|---|---|
+| API1 - Broken Object Level Authorization | Limited: no user-owned resources currently exposed | Add object-level authorization if user accounts are introduced |
+| API2 - Broken Authentication | Authentication is not currently implemented | Add JWT authentication when protected endpoints are introduced |
+| API3 - Broken Object Property Level Authorization | Unauthorized or unexpected fields | Zod validation with strict schemas |
+| API4 - Unrestricted Resource Consumption | Excessive contact requests | express-rate-limit: 5 requests per 15 minutes |
+| API5 - Broken Function Level Authorization | No role-based access control currently | Implement RBAC for administrative endpoints |
+| API6 - Unrestricted Access to Sensitive Business Flows | Automated contact submissions | Rate limiting on POST /api/contact |
+| API7 - Server Side Request Forgery | No user-controlled external URL fetching | Validate destinations if external requests are introduced |
+| API8 - Security Misconfiguration | Insecure HTTP configuration | Helmet security headers |
+| API9 - Improper Inventory Management | API documentation and version inventory need improvement | Document endpoints and maintain API versions |
+| API10 - Unsafe Consumption of APIs | No major third-party API integration currently | Validate and sanitize external API responses if integrations are introduced |
+
+Reference:
+https://owasp.org/API-Security/editions/2023/en/0x11-t10/
