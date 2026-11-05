@@ -646,3 +646,18 @@ npx prisma migrate status
 ```
 
 The initial migration (0_init) was baselined against the existing PostgreSQL database without deleting existing contact records.
+
+## Task 56 — Gestion des variables d'environnement
+
+Les identifiants PostgreSQL sont externalisés dans des fichiers d'environnement.
+
+- `.env.example` : variables utilisées par Docker Compose (`POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`).
+- `api/.env.example` : URL de connexion PostgreSQL utilisée par Prisma en local.
+- `.env` : fichier local contenant les valeurs réelles, exclu de Git grâce à `.gitignore`.
+
+### Configuration
+
+```bash
+cp .env.example .env
+docker compose config
+docker compose up -d --build

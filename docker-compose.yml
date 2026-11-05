@@ -5,7 +5,7 @@ services:
       context: ./api
     environment:
       PORT: "3003"
-      DATABASE_URL: postgres://devsecops:devsecops_dev_password@postgres:5432/devsecops
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
     ports:
       - "4005:3003"
     depends_on:
@@ -28,9 +28,9 @@ services:
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: devsecops
-      POSTGRES_USER: devsecops
-      POSTGRES_PASSWORD: devsecops_dev_password
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:

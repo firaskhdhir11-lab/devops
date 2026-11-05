@@ -13,3 +13,8 @@ npm-debug.log*
 
 # Backup files
 *.backup
+
+# Environment variables
+.env
+
+.env
