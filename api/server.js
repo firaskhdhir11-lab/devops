@@ -2,12 +2,24 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const { z } = require("zod");
+const { rateLimit } = require("express-rate-limit");
 
 const contactSchema = z.object({
   name: z.string().trim().min(2, "Name must contain at least 2 characters").max(100),
   email: z.string().trim().email("Invalid email address").max(254),
   message: z.string().trim().min(10, "Message must contain at least 10 characters").max(2000)
 }).strict();
+const contactLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 5,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  message: {
+    success: false,
+    error: "Too many contact requests. Please try again later."
+  }
+});
+
 const app = express();
 const PORT = process.env.PORT || 3003;
 
@@ -70,7 +82,7 @@ app.get("/api/skills", (req, res) => {
   ]);
 });
 
-app.post("/api/contact", (req, res) => {
+app.post("/api/contact", contactLimiter, (req, res) => {
   const validation = contactSchema.safeParse(req.body);
 
   if (!validation.success) {

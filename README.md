@@ -568,3 +568,22 @@ Security headers verified:
 Test:
 ```bash
 curl -I http://localhost:4005/api/health
+## Task 51 – API Rate Limiting
+
+The `express-rate-limit` package was installed to protect the contact API against excessive requests.
+
+Configuration:
+- Protected endpoint: `POST /api/contact`
+- Maximum requests: 5
+- Time window: 15 minutes
+- HTTP status after exceeding the limit: 429 Too Many Requests
+- Standard rate-limit headers enabled.
+
+Test:
+Six consecutive POST requests were sent to the contact endpoint.
+
+Results:
+- Requests 1–5: HTTP 201 Created
+- Request 6: HTTP 429 Too Many Requests
+
+The test confirms that rate limiting is working correctly.
