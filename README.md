@@ -661,6 +661,7 @@ Les identifiants PostgreSQL sont externalisés dans des fichiers d'environnement
 cp .env.example .env
 docker compose config
 docker compose up -d --build
+
 ## 57. Automated Frontend Tests
 
 Frontend tests are implemented using Vitest and React Testing Library.
@@ -669,6 +670,10 @@ Run the tests:
 
 ```bash
 npm test
+```
+
+**Result:** 2 frontend tests passed successfully.
+
 ## 58. Automated Express API Tests
 
 API tests are implemented using Vitest and Supertest.
@@ -678,6 +683,10 @@ Run the tests:
 ```bash
 cd api
 npm test
+```
+
+**Result:** 3 API tests passed successfully.
+
 ## 59. Automated API Security Tests
 
 Security tests are implemented using Vitest and Supertest.
@@ -687,6 +696,9 @@ Run the API tests:
 ```bash
 cd api
 npm test
+```
+
+**Result:** 8 API security tests passed successfully, including input validation, malformed JSON and SQL injection protection.
 
 ## 60. Integration Tests — Frontend, API and PostgreSQL
 
@@ -694,21 +706,85 @@ An end-to-end integration test was performed to verify communication between the
 
 ### Test procedure
 
-1. Start all services using Docker Compose:
+1. Start all services:
 
 ```bash
 docker compose up -d
+```
+
+2. Verify API health:
+
+```bash
+curl http://localhost:4005/api/health
+```
+
+3. Open the frontend at `http://192.168.10.128:3005` and submit a message using the Contact form.
+
+4. Verify the database:
+
+```bash
+docker compose exec postgres psql -U devsecops -d devsecops -c "SELECT id, name, email, created_at FROM contacts ORDER BY id DESC LIMIT 10;"
+```
+
+**Result:** SUCCESS — The submitted contact message was stored successfully in PostgreSQL.
+
+## 61. Automated Tests with Jenkins
+
+The Jenkins pipeline automatically executes frontend and API tests and builds the Next.js application.
+
+### Pipeline stages
+
+- Install frontend dependencies.
+- Run frontend tests.
+- Install API dependencies.
+- Run API tests.
+- Build the Next.js application.
+
+### Test results
+
+- Frontend: 2 tests passed.
+- API: 8 tests passed.
+- Next.js production build: successful.
+
+**Result:** SUCCESS — Jenkins completed all test and build stages.
+
 ## 62. Automated Docker Image Build with Jenkins
 
 The Jenkins pipeline automatically builds Docker images for the frontend and API.
 
-### Pipeline stages
-
-- Build the Next.js frontend image.
-- Build the Express API image.
-
 ### Docker commands
 
 ```bash
-docker build -t devsecops-portfolio .
-docker build -t devsecops-api ./api
+docker build -t devsecops-portfolio:latest .
+docker build -t devsecops-api:latest ./api
+```
+
+### Verification
+
+```bash
+docker images | grep devsecops
+```
+
+**Result:** SUCCESS — Jenkins successfully built both Docker images:
+
+- `devsecops-portfolio:latest`
+- `devsecops-api:latest`
+
+## 63. Docker Image Tagging with Git SHA
+
+The Jenkins pipeline automatically tags Docker images using the short Git commit SHA.
+
+### Tagging strategy
+
+Each image receives two tags:
+
+- `latest`: identifies the most recent build.
+- Git SHA: identifies the exact source code version.
+
+### Verification
+
+```bash
+docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.ID}}" | grep devsecops
+```
+
+**Result:** SUCCESS — Jenkins successfully created the `latest` and `7db0bef` tags for both Docker images. Both tags of each image reference the same image ID.
