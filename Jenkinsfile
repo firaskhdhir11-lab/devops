@@ -51,15 +51,31 @@ pipeline {
 
         stage('62 - Build Docker Images') {
             steps {
-                sh 'docker build -t devsecops-portfolio .'
-                sh 'docker build -t devsecops-api ./api'
+                sh 'docker build -t devsecops-portfolio:latest .'
+                sh 'docker build -t devsecops-api:latest ./api'
+            }
+        }
+
+        stage('63 - Tag Docker Images with Git SHA') {
+            steps {
+                script {
+                    env.GIT_SHA = sh(
+                        script: 'git rev-parse --short=7 HEAD',
+                        returnStdout: true
+                    ).trim()
+                }
+
+                sh 'docker tag devsecops-portfolio:latest devsecops-portfolio:${GIT_SHA}'
+                sh 'docker tag devsecops-api:latest devsecops-api:${GIT_SHA}'
+
+                echo "Docker images tagged with Git SHA: ${GIT_SHA}"
             }
         }
     }
 
     post {
         success {
-            echo 'SUCCESS: Frontend tests, API tests and Next.js build completed.'
+            echo 'SUCCESS: Tests, Next.js build and Docker image tagging completed.'
         }
         failure {
             echo 'FAILURE: Check the Jenkins console output.'
