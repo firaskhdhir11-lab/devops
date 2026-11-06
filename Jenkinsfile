@@ -13,6 +13,12 @@ pipeline {
             }
         }
 
+        stage('64 - Gitleaks Secret Scan') {
+            steps {
+                sh 'gitleaks detect --source . --redact --verbose'
+            }
+        }
+
         stage('23 - Install Dependencies') {
             steps {
                 sh 'node --version'
