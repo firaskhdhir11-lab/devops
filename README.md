@@ -788,3 +788,15 @@ docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.ID}}" | grep devseco
 ```
 
 **Result:** SUCCESS — Jenkins successfully created the `latest` and `7db0bef` tags for both Docker images. Both tags of each image reference the same image ID.
+## 64. Secret Scanning with Gitleaks
+
+Gitleaks scans the Git repository history to detect accidentally committed secrets and credentials.
+
+### Jenkins pipeline
+
+```groovy
+stage('64 - Gitleaks Secret Scan') {
+  steps {
+    sh 'gitleaks detect --source . --redact --verbose'
+  }
+}
