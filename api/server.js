@@ -21,6 +21,7 @@ const contactLimiter = rateLimit({
   }
 });
 
+// nosemgrep: javascript.express.security.audit.express-check-csurf-middleware-usage.express-check-csurf-middleware-usage -- Stateless API without cookie/session authentication; strict CORS and Origin validation protect browser POST requests.
 const app = express();
 const PORT = process.env.PORT || 3003;
 const pool = new Pool({
@@ -28,8 +29,28 @@ const pool = new Pool({
 });
 
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_ORIGIN || "http://192.168.10.128:3005",
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type"]
+}));
 app.use(express.json());
+
+app.use((req, res, next) => {
+  if (["POST", "PUT", "PATCH", "DELETE"].includes(req.method)) {
+    const origin = req.get("Origin");
+    const allowedOrigin = process.env.FRONTEND_ORIGIN || "http://192.168.10.128:3005";
+
+    if (origin && origin !== allowedOrigin) {
+      return res.status(403).json({
+        success: false,
+        error: "Origin not allowed"
+      });
+    }
+  }
+
+  next();
+});
 
 app.get("/api/health", (req, res) => {
   res.status(200).json({

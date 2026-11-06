@@ -6,6 +6,7 @@ services:
     environment:
       PORT: "3003"
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+      FRONTEND_ORIGIN: http://192.168.10.128:3005
     ports:
       - "4005:3003"
     depends_on:

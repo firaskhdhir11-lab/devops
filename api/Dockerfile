@@ -12,4 +12,7 @@ ENV PORT=3003
 
 EXPOSE 3003
 
+RUN chown -R node:node /app
+USER node
+
 CMD ["npm", "start"]
