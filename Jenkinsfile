@@ -48,6 +48,13 @@ pipeline {
                 sh 'npm run build'
             }
         }
+
+        stage('62 - Build Docker Images') {
+            steps {
+                sh 'docker build -t devsecops-portfolio .'
+                sh 'docker build -t devsecops-api ./api'
+            }
+        }
     }
 
     post {
