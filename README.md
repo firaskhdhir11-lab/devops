@@ -669,3 +669,32 @@ Run the tests:
 
 ```bash
 npm test
+## 58. Automated Express API Tests
+
+API tests are implemented using Vitest and Supertest.
+
+Run the tests:
+
+```bash
+cd api
+npm test
+## 59. Automated API Security Tests
+
+Security tests are implemented using Vitest and Supertest.
+
+Run the API tests:
+
+```bash
+cd api
+npm test
+
+## 60. Integration Tests — Frontend, API and PostgreSQL
+
+An end-to-end integration test was performed to verify communication between the frontend, Express API and PostgreSQL database.
+
+### Test procedure
+
+1. Start all services using Docker Compose:
+
+```bash
+docker compose up -d
