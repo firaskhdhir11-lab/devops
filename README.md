@@ -698,3 +698,17 @@ An end-to-end integration test was performed to verify communication between the
 
 ```bash
 docker compose up -d
+## 62. Automated Docker Image Build with Jenkins
+
+The Jenkins pipeline automatically builds Docker images for the frontend and API.
+
+### Pipeline stages
+
+- Build the Next.js frontend image.
+- Build the Express API image.
+
+### Docker commands
+
+```bash
+docker build -t devsecops-portfolio .
+docker build -t devsecops-api ./api
