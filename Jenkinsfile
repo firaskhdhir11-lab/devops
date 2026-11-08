@@ -19,6 +19,30 @@ pipeline {
             }
         }
 
+        stage('67 - OWASP Dependency-Check') {
+            steps {
+                withCredentials([string(credentialsId: 'NVD_API_KEY', variable: 'NVD_API_KEY')]) {
+                    sh '''
+                        mkdir -p "$WORKSPACE/dependency-check-report"
+                        docker run --rm \
+                          --user "$(id -u):$(id -g)" \
+                          -v "$WORKSPACE:/src" \
+                          -v "$JENKINS_HOME/.dependency-check-data:/usr/share/dependency-check/data" \
+                          -v "$WORKSPACE/dependency-check-report:/report" \
+                          owasp/dependency-check:latest \
+                          --scan /src/package.json \
+                          --scan /src/package-lock.json \
+                          --scan /src/api/package.json \
+                          --scan /src/api/package-lock.json \
+                          --format HTML \
+                          --out /report \
+                          --nvdApiKey "$NVD_API_KEY"
+                    '''
+                    archiveArtifacts artifacts: 'dependency-check-report/dependency-check-report.html', fingerprint: true
+                }
+            }
+        }
+
         stage('23 - Install Dependencies') {
             steps {
                 sh 'node --version'
