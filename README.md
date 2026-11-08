@@ -800,3 +800,47 @@ stage('64 - Gitleaks Secret Scan') {
     sh 'gitleaks detect --source . --redact --verbose'
   }
 }
+
+
+## 67. OWASP Dependency-Check – Software Composition Analysis (SCA)
+
+OWASP Dependency-Check is integrated into the Jenkins pipeline to identify publicly disclosed vulnerabilities in project dependencies.
+
+### Jenkins pipeline
+
+```groovy
+stage('67 - OWASP Dependency-Check') {
+    steps {
+        withCredentials([string(credentialsId: 'NVD_API_KEY', variable: 'NVD_API_KEY')]) {
+            sh '''
+                mkdir -p "$WORKSPACE/dependency-check-report"
+
+                docker run --rm \
+                    --user "$(id -u):$(id -g)" \
+                    -v "$WORKSPACE:/src" \
+                    -v "$JENKINS_HOME/.dependency-check-data:/usr/share/dependency-check/data" \
+                    -v "$WORKSPACE/dependency-check-report:/report" \
+                    owasp/dependency-check:latest \
+                    --scan /src/package.json \
+                    --scan /src/package-lock.json \
+                    --scan /src/api/package.json \
+                    --scan /src/api/package-lock.json \
+                    --format HTML \
+                    --out /report \
+                    --nvdApiKey "$NVD_API_KEY"
+            '''
+
+            archiveArtifacts artifacts: 'dependency-check-report/dependency-check-report.html', fingerprint: true
+        }
+    }
+}
+```
+
+### Verification
+
+- NVD API Key configured securely in Jenkins Credentials.
+- Dependency-Check analysis completed successfully.
+- HTML vulnerability report generated and archived in Jenkins.
+- Jenkins pipeline completed successfully.
+
+**Result:** SUCCESS — OWASP Dependency-Check successfully analyzed the project dependencies and generated an HTML security report.
