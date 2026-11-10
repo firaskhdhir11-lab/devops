@@ -86,6 +86,15 @@ pipeline {
             }
         }
 
+        stage('68 - Trivy Image Scan') {
+            steps {
+                sh 'trivy image --scanners vuln --pkg-types os,library devsecops-portfolio:latest'
+                sh 'trivy image --scanners vuln --pkg-types os,library devsecops-api:latest'
+                sh 'trivy image --scanners secret devsecops-portfolio:latest'
+                sh 'trivy image --scanners secret devsecops-api:latest'
+            }
+        }
+
         stage('63 - Tag Docker Images with Git SHA') {
             steps {
                 script {

@@ -1,6 +1,9 @@
 FROM node:22-alpine
+RUN apk update && apk upgrade --no-cache zlib
 
 WORKDIR /app
+
+RUN npm install -g npm@11.21.2
 
 COPY package*.json ./
 RUN npm install --omit=dev

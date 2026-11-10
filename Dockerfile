@@ -1,4 +1,6 @@
 FROM node:22-alpine
+RUN apk update && apk upgrade --no-cache zlib
+RUN npm install -g npm@11.21.2
 
 WORKDIR /app
 
