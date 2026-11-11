@@ -19,6 +19,18 @@ pipeline {
             }
         }
 
+        stage('65 - Semgrep SAST') {
+            steps {
+                sh '''
+                    docker run --rm \
+                      -v "$WORKSPACE:/src:ro" \
+                      -w /src \
+                      semgrep/semgrep:latest \
+                      semgrep scan --config p/default --metrics=off .
+                '''
+            }
+        }
+
         stage('67 - OWASP Dependency-Check') {
             steps {
                 withCredentials([string(credentialsId: 'NVD_API_KEY', variable: 'NVD_API_KEY')]) {
@@ -61,6 +73,15 @@ pipeline {
             steps {
                 dir('api') {
                     sh 'npm ci'
+                }
+            }
+        }
+
+        stage('66 - Node.js Dependency Audit') {
+            steps {
+                sh 'npm audit'
+                dir('api') {
+                    sh 'npm audit'
                 }
             }
         }
