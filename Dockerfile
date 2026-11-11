@@ -1,6 +1,5 @@
 FROM node:22-alpine
 RUN apk update && apk upgrade --no-cache zlib
-RUN npm install -g npm@11.21.2
 
 WORKDIR /app
 
@@ -17,10 +16,11 @@ ENV HOSTNAME=0.0.0.0
 ENV PORT=3000
 
 RUN npm run build
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 
 EXPOSE 3000
 
 RUN chown -R node:node /app
 USER node
 
-CMD ["npm", "run", "start", "--", "--hostname", "0.0.0.0"]
+CMD ["node", "node_modules/next/dist/bin/next", "start", "--hostname", "0.0.0.0"]

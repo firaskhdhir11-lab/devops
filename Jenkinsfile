@@ -88,10 +88,10 @@ pipeline {
 
         stage('68 - Trivy Image Scan') {
             steps {
-                sh 'trivy image --scanners vuln --pkg-types os,library devsecops-portfolio:latest'
-                sh 'trivy image --scanners vuln --pkg-types os,library devsecops-api:latest'
-                sh 'trivy image --scanners secret devsecops-portfolio:latest'
-                sh 'trivy image --scanners secret devsecops-api:latest'
+                sh 'trivy image --scanners vuln --pkg-types os,library --severity CRITICAL --exit-code 1 devsecops-portfolio:latest'
+                sh 'trivy image --scanners vuln --pkg-types os,library --severity CRITICAL --exit-code 1 devsecops-api:latest'
+                sh 'trivy image --scanners secret --exit-code 1 devsecops-portfolio:latest'
+                sh 'trivy image --scanners secret --exit-code 1 devsecops-api:latest'
             }
         }
 

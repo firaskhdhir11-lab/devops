@@ -3,7 +3,6 @@ RUN apk update && apk upgrade --no-cache zlib
 
 WORKDIR /app
 
-RUN npm install -g npm@11.21.2
 
 COPY package*.json ./
 RUN npm install --omit=dev
@@ -16,6 +15,7 @@ ENV PORT=3003
 EXPOSE 3003
 
 RUN chown -R node:node /app
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 USER node
 
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
