@@ -787,7 +787,7 @@ Each image receives two tags:
 docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.ID}}" | grep devsecops
 ```
 
-**Result:** SUCCESS — Jenkins successfully created the `latest` and `7db0bef` tags for both Docker images. Both tags of each image reference the same image ID.
+**Result:** SUCCESS — Jenkins successfully created the `latest` and `dc7f0c7` tags for both Docker images. Both tags of each image reference the same image ID.
 ## 64. Secret Scanning with Gitleaks
 
 Gitleaks scans the Git repository history to detect accidentally committed secrets and credentials.
@@ -801,6 +801,52 @@ stage('64 - Gitleaks Secret Scan') {
   }
 }
 
+
+## 65. Static Application Security Testing (SAST) with Semgrep
+
+Semgrep analyzes the frontend and backend source code to identify potential security issues.
+
+### Jenkins pipeline
+
+```groovy
+stage('65 - Semgrep SAST') {
+    steps {
+        sh '''
+            docker run --rm \
+              -v "$WORKSPACE:/src:ro" \
+              -w /src \
+              semgrep/semgrep:latest \
+              semgrep scan --config p/default --metrics=off .
+        '''
+    }
+}
+
+```
+
+## 66. Node.js Dependency Audit with npm audit
+
+The pipeline checks frontend and backend dependencies for known security vulnerabilities.
+
+### Jenkins pipeline
+
+```groovy
+stage('66 - Node.js Dependency Audit') {
+    steps {
+        sh 'npm audit'
+        dir('api') {
+            sh 'npm audit'
+        }
+    }
+}
+```
+
+### Verification
+
+- Frontend dependencies audited successfully.
+- Backend dependencies audited successfully.
+- Both audits returned: `found 0 vulnerabilities`.
+
+**Result:** SUCCESS — npm audit completed for both frontend and backend dependencies.
 
 ## 67. OWASP Dependency-Check – Software Composition Analysis (SCA)
 
@@ -844,3 +890,46 @@ stage('67 - OWASP Dependency-Check') {
 - Jenkins pipeline completed successfully.
 
 **Result:** SUCCESS — OWASP Dependency-Check successfully analyzed the project dependencies and generated an HTML security report.
+
+## 68. Docker Image Security Scanning with Trivy
+
+Trivy scans both Docker images for critical vulnerabilities and embedded secrets.
+
+### Jenkins pipeline
+
+```groovy
+stage('68 - Trivy Image Scan') {
+    steps {
+        sh 'trivy image --scanners vuln --pkg-types os,library --severity CRITICAL --exit-code 1 devsecops-portfolio:latest'
+        sh 'trivy image --scanners vuln --pkg-types os,library --severity CRITICAL --exit-code 1 devsecops-api:latest'
+        sh 'trivy image --scanners secret --exit-code 1 devsecops-portfolio:latest'
+        sh 'trivy image --scanners secret --exit-code 1 devsecops-api:latest'
+    }
+}
+```
+
+### Verification
+
+- Frontend Docker image scanned with Trivy.
+- Backend Docker image scanned with Trivy.
+- Critical vulnerabilities and secrets are configured to fail the pipeline.
+
+**Result:** SUCCESS — Trivy security scanning is integrated into the Jenkins pipeline.
+
+## 69. Security Gate – Fail the Pipeline on Critical Findings
+
+The Jenkins pipeline enforces security checks and stops execution when a blocking security issue is detected.
+
+### Security enforcement
+
+- **Gitleaks:** the pipeline fails when secrets are detected.
+- **Trivy vulnerability scan:** `--exit-code 1` makes the scan fail when critical vulnerabilities are found.
+- **Trivy secret scan:** `--exit-code 1` makes the scan fail when secrets are detected.
+- Jenkins stops subsequent stages when a stage fails.
+
+### Verification
+
+- Successful pipeline execution: demonstrates that the security checks passed.
+- Intentionally failed pipeline execution: must be tested by introducing a controlled secret or critical finding in a safe test branch, then confirming that Jenkins fails at the relevant stage.
+
+**Result:** Security gates are configured. The intentional failure test and its screenshot are still pending.
