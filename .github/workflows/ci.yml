@@ -1,0 +1,68 @@
+name: DevSecOps CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: Frontend and API tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeba8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Run frontend tests
+        run: npm test
+
+      - name: Install API dependencies
+        run: npm ci --prefix api
+
+      - name: Run API tests
+        run: npm test --prefix api
+
+      - name: Secrets scan with Gitleaks
+        run: docker run --rm -v "$GITHUB_WORKSPACE:/repo" zricethezav/gitleaks:v8.24.2 detect --source=/repo --no-git --redact
+
+      - name: SAST with Semgrep
+        run: docker run --rm -v "$GITHUB_WORKSPACE:/src" semgrep/semgrep:1.100.0 semgrep scan --config auto --error /src
+
+      - name: Frontend dependency audit
+        run: npm audit --audit-level=high
+
+      - name: API dependency audit
+        run: npm audit --prefix api --audit-level=high
+
+  build-images:
+    name: Build Frontend and API Docker images
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Build Frontend image
+        run: docker build -t devsecops-portfolio:${GITHUB_SHA} .
+
+      - name: Build API image
+        run: docker build -t devsecops-api:${GITHUB_SHA} ./api
+
+      - name: Scan Frontend image with Trivy
+        run: docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.76.2 image --exit-code 1 --severity CRITICAL devsecops-portfolio:${GITHUB_SHA}
+
+      - name: Scan API image with Trivy
+        run: docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.76.2 image --exit-code 1 --severity CRITICAL devsecops-api:${GITHUB_SHA}

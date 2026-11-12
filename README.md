@@ -933,3 +933,79 @@ The Jenkins pipeline enforces security checks and stops execution when a blockin
 - Intentionally failed pipeline execution: must be tested by introducing a controlled secret or critical finding in a safe test branch, then confirming that Jenkins fails at the relevant stage.
 
 **Result:** Security gates are configured. The intentional failure test and its screenshot are still pending.
+
+
+## 74 - CodeQL vs Semgrep
+
+| Criterion | GitHub CodeQL | Semgrep |
+|---|---|---|
+| Type | Semantic SAST analysis | Pattern-based SAST analysis |
+| Analysis | Builds a code database and runs queries | Matches code patterns and rules |
+| Integration | Native GitHub Security integration | CLI, Docker and CI/CD integration |
+| Findings | Code vulnerabilities and security paths | Security issues and insecure coding patterns |
+| Pipeline | Dedicated GitHub Actions workflow | Integrated into CI workflow |
+| Main advantage | Deep semantic analysis | Fast and flexible rule configuration |
+
+**Conclusion:** CodeQL provides deep semantic analysis and native GitHub integration, while Semgrep offers fast and flexible static analysis. Using both improves security coverage through complementary detection approaches.
+
+## 77 - Securing the CI/CD Pipeline
+
+### Immutable GitHub Actions
+
+Third-party GitHub Actions are pinned to full commit SHAs instead of mutable version tags. This prevents an action tag from silently changing to different code.
+
+### Least Privilege
+
+Workflows use minimum required GITHUB_TOKEN permissions:
+- CI workflow: contents: read.
+- CodeQL workflow: contents: read, security-events: write, actions: read.
+
+### CI/CD as an Attack Surface
+
+The CI/CD pipeline is part of the software supply chain. Attackers may target compromised third-party actions, stolen secrets, excessive token permissions, or malicious dependencies.
+
+Security measures include:
+- Pinning third-party actions to immutable commit SHAs.
+- Restricting token permissions.
+- Scanning secrets and dependencies.
+- Running SAST and container image scans.
+- Reviewing workflow changes through pull requests.
+
+
+## 78 - GitHub Actions vs Jenkins
+
+| Criterion | GitHub Actions | Jenkins |
+|---|---|---|
+| Hosting | GitHub-hosted runners or self-hosted runners | Self-hosted automation server |
+| Configuration | YAML workflows in `.github/workflows/` | `Jenkinsfile` using Pipeline syntax |
+| Git integration | Native integration with GitHub repositories and pull requests | Integrates with Git providers through plugins |
+| Testing | Frontend and API tests | Frontend and API tests |
+| Secrets scanning | Gitleaks | Gitleaks |
+| SAST | Semgrep and CodeQL | Semgrep |
+| Dependency security | npm audit | npm audit and OWASP Dependency-Check |
+| Container security | Trivy | Trivy |
+| Docker build | Builds frontend and API images | Builds frontend and API images |
+| Maintenance | GitHub manages hosted runners | Administrator manages Jenkins server and plugins |
+| Extensibility | GitHub Actions marketplace | Large Jenkins plugin ecosystem |
+
+**Conclusion:** GitHub Actions provides native GitHub integration and managed runners, while Jenkins offers flexibility and extensive plugin support with greater infrastructure maintenance responsibility. Both pipelines implement testing, security scanning, and Docker image building.
+
+## 79 - Git Workflow
+
+The project follows a branch-based workflow:
+
+1. Create a feature or fix branch from `main`.
+2. Implement changes and commit them.
+3. Push the branch to GitHub.
+4. Open a Pull Request targeting `main`.
+5. Review the changes and verify all required CI checks.
+6. Merge the Pull Request after approval and successful checks.
+
+### Branch Naming Convention
+
+- `feature/<description>`: new features.
+- `fix/<description>`: bug fixes.
+- `docs/<description>`: documentation changes.
+- `security/<description>`: security improvements.
+
+**Rule:** Direct work on `main` should be avoided. Changes must be proposed through Pull Requests.
