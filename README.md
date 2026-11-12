@@ -1009,3 +1009,31 @@ The project follows a branch-based workflow:
 - `security/<description>`: security improvements.
 
 **Rule:** Direct work on `main` should be avoided. Changes must be proposed through Pull Requests.
+
+## 82 - Conventional Commits
+
+The project follows the Conventional Commits specification to keep commit messages consistent, readable, and suitable for automated release management.
+
+### Commit Message Format
+
+`<type>(<scope>): <description>`
+
+### Commit Types
+
+- `feat`: Introduces a new feature.
+- `fix`: Fixes a bug.
+- `docs`: Documentation changes.
+- `test`: Adds or updates tests.
+- `refactor`: Code restructuring without changing behavior.
+- `ci`: CI/CD configuration changes.
+- `build`: Build system or dependency changes.
+- `chore`: Maintenance tasks.
+
+### Examples
+
+- `feat(ci): add GitHub security workflows`
+- `fix(api): correct health check endpoint`
+- `docs: document Git workflow`
+- `test(frontend): add header component tests`
+
+**Rule:** Commit messages must use an imperative, concise description and follow the Conventional Commits format.
