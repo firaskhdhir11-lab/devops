@@ -1037,3 +1037,26 @@ The project follows the Conventional Commits specification to keep commit messag
 - `test(frontend): add header component tests`
 
 **Rule:** Commit messages must use an imperative, concise description and follow the Conventional Commits format.
+
+## 83 - Semantic Versioning
+
+The project follows Semantic Versioning (SemVer) to manage software releases.
+
+### Version Format
+
+`MAJOR.MINOR.PATCH`
+
+- `MAJOR`: Incremented when introducing incompatible changes.
+- `MINOR`: Incremented when adding backward-compatible functionality.
+- `PATCH`: Incremented when fixing backward-compatible bugs.
+
+### Versioning Examples
+
+- `v0.1.0`: Initial development release.
+- `v0.2.0`: New backward-compatible features.
+- `v0.2.1`: Backward-compatible bug fixes.
+- `v1.0.0`: First stable release.
+
+Git tags are used to identify project versions.
+
+**Rule:** Every release must follow the Semantic Versioning format.
