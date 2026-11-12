@@ -32,3 +32,9 @@ describe("Header component", () => {
     expect(nav).not.toHaveClass("open");
   });
 });
+
+describe("Required checks demonstration", () => {
+  it("fails intentionally to demonstrate PR protection", () => {
+    expect(true).toBe(false);
+  });
+});
